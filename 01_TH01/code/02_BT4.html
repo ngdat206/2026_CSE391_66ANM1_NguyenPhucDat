@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bài 4</title>
+</head>
+<body>
+
+<table>
+<tr>
+<td>
+    
+    <!-- Basic Info -->
+    <h3>Basic Info</h3>
+    <hr>
+    
+    <table border="0" cellpadding="5" width="100%">
+        <tr>
+            <!-- <b>: chữ đậm -->
+            <td><b>Employee ID</b></td>
+            <td>9</td>
+        </tr>
+        <tr>
+            <td><b>Last Name</b></td>
+            <td>Dodsworth</td>
+        </tr>
+        <tr>
+            <td><b>First Name</b></td>
+            <!-- kích cỡ text nhập -->
+            <td><input type="text" value="Anne" size="60"></td>
+        </tr>
+        <tr>
+            <td valign="center"><b>Gender</b></td>
+            <td>
+                <!-- type: chỉ chọn đc 1 -->
+                <input type="radio" name="gender"> Male<br>
+                <input type="radio" name="gender"> Female<br>
+                <input type="radio" name="gender"> XXX<br>
+                <input type="radio" name="gender" checked> ZZZ
+            </td>
+        </tr>
+        <tr>
+            <td><b>Title</b></td>
+            <td><input type="text" value="Sales Representative" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Suffix</b></td>
+            <td><input type="text" value="Ms." size="60"></td>
+        </tr>
+        <tr>
+            <td><b>BirthDate</b></td>
+            <td><input type="text" value="1969-07-02 00:00:00" size="60"> (?)</td>
+        </tr>
+        <tr>
+            <td><b>HireDate</b></td>
+            <td><input type="text" value="1994-11-15 00:00:00" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>SSN # (if applicable)</b></td>
+            <td><input type="password" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Reports To</b></td>
+            <td>
+                <select name="reportsTo">
+                    <option>Buchanan</option>
+                    <option>Suyama</option>
+                    <option>Fuller</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    
+    <br><br>
+    
+    <!-- Contact Info -->
+    <h3>Contact Info</h3>
+    <hr>
+    
+    <table border="0" cellpadding="5" width="100%">
+        <tr>
+            <td width="200"><b>Email</b></td>
+            <td><input type="text" placeholder="name@example.com" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Address</b></td>
+            <td><input type="text" value="7 Houndstooth Rd." size="60"></td>
+        </tr>
+        <tr>
+            <td><b>City</b></td>
+            <td><input type="text" value="London" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Region</b></td>
+            <td><input type="text" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Postal Code</b></td>
+            <td><input type="text" value="WG2 7LT" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Country</b></td>
+            <td>
+                <select name="country">
+                    <option>Russian Federation</option>
+                    <option>United Kingdom</option>
+                    <option>United States</option>
+                    <option>Vietnam</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><b>US Home Phone</b></td>
+            <td><input type="text" value="(234)234-2342" size="60"></td>
+        </tr>
+        <tr>
+            <td><b>Photo</b></td>
+            <td><input type="text" value="EmpID9.bmp" size="60"></td>
+        </tr>
+    </table>
+    
+    <br><br>
+    
+    <!-- Optional Info -->
+    <h3>Optional Info</h3>
+    <hr>
+    
+    <table border="0" cellpadding="5" width="100%">
+        <tr>
+            <td width="200" valign="top"><b>Notes</b></td>
+            <td>
+                <!-- ko hiểu -->
+                <table border="1" bordercolor="#cccccc" cellpadding="5" width="100%">
+                    <tr>
+                        <td bgcolor="#f5f5f5">
+                            <b>B</b> <i>I</i> <s>S</s> <u>U</u> | 
+                            <small>align buttons</small> | 
+                            <small>list buttons</small> | 
+                            X<sub>2</sub> X<sup>2</sup> | 
+                            <small>undo/redo</small> | 
+                            <small>more tools</small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <textarea rows="5" cols="70">Anne has a BA degree in English from St. Lawrence College. She is fluent in French and German.ZZZ</textarea>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td><b>Preferred Shift</b></td>
+            <td>
+                <input type="checkbox"> Regular<br>
+                <input type="checkbox" checked> Gravy Yard
+            </td>
+        </tr>
+        <tr>
+            <td><b>Active?</b></td>
+            <td><input type="checkbox" checked></td>
+        </tr>
+        <tr>
+            <td valign="top"><b>Are you human?</b></td>
+            <td>
+                <font face="Courier New" size="4">
+                    <b>T &nbsp; I &nbsp; D &nbsp; A &nbsp; M &nbsp; O</b>
+                </font>
+                <br>
+                <a href="#">Click to change</a>
+                <br><br>
+                <input type="text" size="60">
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    <hr>
+    <br>
+    
+    <!-- Buttons -->
+    <table width="100%">
+        <tr>
+            <td align="left">
+                <button type="button">◀</button>
+                <button type="button">▶</button>
+            </td>
+            <td align="right">
+                <button type="submit">💾 Submit</button>
+                <button type="reset">✖ Cancel</button>
+            </td>
+        </tr>
+    </table>
+    
+    <br>
+    <font color="red" size="2">* required</font>
+    
+</form>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
