@@ -1,0 +1,153 @@
+/* TODO 1: Universal selector reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* TODO 2: Type selector body */
+body { font-family: Arial; background-color: #f5f5f5; }
+
+/* TODO 3: ID selector #main-header */
+#main-header { background-color: #333; color: white; text-align: center; padding: 20px; }
+
+/* TODO 4: Class selector .nav-link */
+.nav-link { color: #333; text-decoration: none; padding: 10px 15px; }
+
+/* TODO 5: Group selector h1, h2, h3 */
+h1, h2, h3 { font-family: 'Georgia', serif; }
+
+/* TODO 6: Descendant selector nav a */
+nav a { display: inline-block; margin: 0 10px; }
+
+/* TODO 7: Pseudo-class a:hover */
+a:hover { color: #ff6600; background-color: #eee; }
+
+
+
+
+/* Bước 1: Reset box-sizing cho toàn trang */
+* {
+    box-sizing: border-box;
+}
+
+/* Bước 2: Style cho .posts container */
+.posts {
+    max-width: 960px;      /* Giới hạn chiều rộng */
+    margin: 30px auto;     /* Căn giữa + cách trên dưới */
+    padding: 0 10px;       /* Tránh sát mép */
+    font-size: 0;          /* Xóa khoảng trắng inline-block */
+}
+
+/* Bước 3: Style cho .card */
+.card {
+    width: calc(33.33% - 20px); /* 3 card 1 hàng */
+    display: inline-block;      
+    vertical-align: top;        
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px;
+    background: white;
+    border-radius: 8px;
+    font-size: 16px; /* Khôi phục font */
+}
+
+/* Bước 4: Style cho .btn */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* Cải tiến nav bằng Flexbox */
+nav {
+    
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        background: #f8f9fa;
+        padding: 15px;
+}
+/* Cải tiến .posts bằng Flexbox */
+.posts {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.card {
+    flex: 1;                 /* Chia đều 3 card */
+    max-width: 350px;      
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+/* Responsive: Khi màn hình < 768px, card chiếm full width */
+@media (max-width: 768px) {
+    .posts {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .card {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    nav {
+        gap: 15px;
+    }
+}
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Desktop */
+    gap: 16px;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+.item {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    font-size: 2rem;
+    border-radius: 8px;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+}
