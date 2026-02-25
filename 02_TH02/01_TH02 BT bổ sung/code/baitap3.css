@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f0f0f0;
+}
+
+/* Wrapper chính có viền xanh trái và phải */
+.page-wrapper {
+  max-width: 1060px;
+  margin: 60px auto;
+  border-left: 3px solid #5b9bd5;
+  border-right: 3px solid #5b9bd5;
+  padding: 50px 40px 60px;
+  background-color: #fff;
+}
+
+/* Tiêu đề lớn giữa trang */
+.main-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: normal;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  color: #222;
+  margin-bottom: 60px;
+}
+
+/* Hàng nội dung: card trái + text phải */
+.content-row {
+  display: flex;
+  gap: 50px;
+  align-items: flex-start;
+}
+
+/* ===== CARD TRÁI ===== */
+.card {
+  flex: 0 0 320px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 28px 24px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.card h2 {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 1.6;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+.card p {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.author-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.author-role {
+  font-size: 13px;
+  color: #5b9bd5;
+  margin-bottom: 0;
+}
+
+/* ===== NỘI DUNG PHẢI ===== */
+.text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.text-content p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.8;
+}
+
+.text-content .bold-text {
+  font-weight: bold;
+  color: #222;
+}
