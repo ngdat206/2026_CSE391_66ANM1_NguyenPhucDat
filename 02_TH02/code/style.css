@@ -151,3 +151,50 @@ nav {
         grid-template-columns: 1fr;
     }
 }
+/* Header sticky */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    /* TODO: Thêm box-shadow để tạo hiệu ứng nổi */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    background-color: #333; /* Đảm bảo có màu nền để không bị xuyên thấu khi cuộn */
+}
+
+/* Nút Scroll to Top */
+.scroll-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    /* TODO: Hoàn thành các thuộc tính */
+    width: 50px;
+    height: 50px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    font-size: 24px;
+    transition: all 0.3s ease; /* Thêm hiệu ứng mượt mà khi hover */
+    z-index: 99;
+}
+
+
+.scroll-top:hover {
+    /* TODO: Hiệu ứng khi di chuột vào */
+    background: #0056b3;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    nav {
+        /* TODO: Chuyển menu từ ngang sang dọc trên điện thoại */
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 0;
+    }
+}
