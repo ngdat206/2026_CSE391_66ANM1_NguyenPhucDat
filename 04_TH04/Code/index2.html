@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bảng Điểm Sinh Viên</title>
+</head>
+<body>
+
+  <h1>Bảng Điểm Sinh Viên</h1>
+
+  <!-- Nhập liệu -->
+  <label>Họ và tên: <input type="text" id="inp-name" placeholder="Nguyễn Văn A" /></label>
+  <label>Điểm (0–10): <input type="number" id="inp-score" placeholder="8.5" min="0" max="10" step="0.1" /></label>
+  <button id="btn-add">Thêm</button>
+
+  <hr />
+
+  <!-- Tìm kiếm & Lọc -->
+  <label>Tìm kiếm: <input type="text" id="inp-search" placeholder="Nhập tên..." /></label>
+  <label>Xếp loại:
+    <select id="sel-filter">
+      <option value="">Tất cả</option>
+      <option value="Giỏi">Giỏi</option>
+      <option value="Khá">Khá</option>
+      <option value="Trung bình">Trung bình</option>
+      <option value="Yếu">Yếu</option>
+    </select>
+  </label>
+
+  <!-- Bảng -->
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Họ tên</th>
+        <th id="th-diem" style="cursor:pointer">Điểm</th>
+        <th>Xếp loại</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <!-- Thống kê -->
+  <p id="stats">Tổng: 0 sinh viên | Điểm trung bình: —</p>
+
+  <script>
+    let students = [];          // mảng gốc
+    let sortDir  = null;        // null | 'asc' | 'desc'
+
+    function xepLoai(diem) {
+      if (diem >= 8.5) return 'Giỏi';
+      if (diem >= 7.0) return 'Khá';
+      if (diem >= 5.0) return 'Trung bình';
+      return 'Yếu';
+    }
+
+    // ── Áp dụng filter + sort → trả về mảng đã xử lý ──
+    function applyFilters() {
+      const keyword    = document.getElementById('inp-search').value.trim().toLowerCase();
+      const filterXL   = document.getElementById('sel-filter').value;
+
+      let result = students.filter(sv => {
+        const matchTen = sv.ten.toLowerCase().includes(keyword);
+        const matchXL  = filterXL === '' || xepLoai(sv.diem) === filterXL;
+        return matchTen && matchXL;
+      });
+
+      if (sortDir === 'asc')  result.sort((a, b) => a.diem - b.diem);
+      if (sortDir === 'desc') result.sort((a, b) => b.diem - a.diem);
+
+      return result;
+    }
+
+    // ── Vẽ bảng từ filteredStudents ──────────────────────
+    function renderTable() {
+      const filtered = applyFilters();
+      const tbody    = document.getElementById('tbody');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">Không có kết quả</td></tr>';
+      } else {
+        tbody.innerHTML = filtered.map((sv, idx) => `
+          <tr style="${sv.diem < 5 ? 'background:yellow' : ''}">
+            <td>${idx + 1}</td>
+            <td>${sv.ten}</td>
+            <td>${sv.diem.toFixed(1)}</td>
+            <td>${xepLoai(sv.diem)}</td>
+            <td><button class="btn-del" data-ten="${sv.ten}">Xóa</button></td>
+          </tr>
+        `).join('');
+      }
+
+      // Thống kê theo toàn bộ mảng gốc
+      const total = students.length;
+      const avg   = total === 0 ? '—' : (students.reduce((s, sv) => s + sv.diem, 0) / total).toFixed(2);
+      document.getElementById('stats').textContent =
+        `Tổng: ${total} sinh viên | Điểm trung bình: ${avg}`;
+
+      // Cập nhật mũi tên tiêu đề cột
+      const arrow = sortDir === 'asc' ? ' ▲' : sortDir === 'desc' ? ' ▼' : '';
+      document.getElementById('th-diem').textContent = 'Điểm' + arrow;
+    }
+
+    // ── Thêm sinh viên ────────────────────────────────────
+    function themSinhVien() {
+      const inpName  = document.getElementById('inp-name');
+      const inpScore = document.getElementById('inp-score');
+      const ten  = inpName.value.trim();
+      const diem = parseFloat(inpScore.value);
+
+      if (!ten)                          { alert('Vui lòng nhập họ tên!');          inpName.focus();  return; }
+      if (isNaN(diem) || diem < 0 || diem > 10) { alert('Điểm phải là số từ 0 đến 10!'); inpScore.focus(); return; }
+
+      students.push({ ten, diem });
+      inpName.value = ''; inpScore.value = '';
+      inpName.focus();
+      renderTable();
+    }
+
+    // ── Sự kiện ───────────────────────────────────────────
+
+    document.getElementById('btn-add').addEventListener('click', themSinhVien);
+
+    document.getElementById('inp-score').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') themSinhVien();
+    });
+
+    // Tìm kiếm realtime
+    document.getElementById('inp-search').addEventListener('input', renderTable);
+
+    // Lọc xếp loại
+    document.getElementById('sel-filter').addEventListener('change', renderTable);
+
+    // Sắp xếp theo Điểm (click tiêu đề)
+    document.getElementById('th-diem').addEventListener('click', () => {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      renderTable();
+    });
+
+    // Event Delegation: Xóa (dùng tên làm key vì filteredStudents không giữ index gốc)
+    document.getElementById('tbody').addEventListener('click', (e) => {
+      if (e.target.matches('.btn-del')) {
+        const ten = e.target.getAttribute('data-ten');
+        // Xóa lần đầu tiên tìm thấy trong mảng gốc
+        const idx = students.findIndex(sv => sv.ten === ten);
+        if (idx !== -1) students.splice(idx, 1);
+        renderTable();
+      }
+    });
+
+    renderTable();
+  </script>
+
+</body>
+</html>

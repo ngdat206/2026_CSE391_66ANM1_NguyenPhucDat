@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài 2.2 – Form Đặt Hàng</title>
+</head>
+<body>
+
+  <h2>Form Đặt Hàng Trực Tuyến</h2>
+
+  <!-- FORM -->
+  <form id="order-form" novalidate>
+
+    <!-- Sản phẩm -->
+    <div>
+      <label for="product">Tên sản phẩm (*)</label><br>
+      <select id="product">
+        <option value="">-- Chọn sản phẩm --</option>
+        <option value="Áo thun">Áo thun</option>
+        <option value="Quần jeans">Quần jeans</option>
+        <option value="Giày thể thao">Giày thể thao</option>
+        <option value="Túi xách">Túi xách</option>
+        <option value="Nón lưỡi trai">Nón lưỡi trai</option>
+      </select><br>
+      <span id="err-product" style="display:none; color:red;">Vui lòng chọn sản phẩm.</span>
+    </div>
+
+    <br>
+
+    <!-- Số lượng -->
+    <div>
+      <label for="quantity">Số lượng (*)</label><br>
+      <input type="number" id="quantity" min="1" max="99" placeholder="1 – 99"><br>
+      <span id="err-quantity" style="display:none; color:red;">Số lượng phải là số nguyên từ 1 đến 99.</span>
+    </div>
+
+    <br>
+
+    <!-- Tổng tiền -->
+    <div>
+      Thành tiền: <strong id="price-value">—</strong>
+    </div>
+
+    <br>
+
+    <!-- Ngày giao hàng -->
+    <div>
+      <label for="delivery-date">Ngày giao hàng (*)</label><br>
+      <input type="date" id="delivery-date"><br>
+      <span id="err-date" style="display:none; color:red;">Ngày giao phải từ hôm nay đến 30 ngày tới.</span>
+    </div>
+
+    <br>
+
+    <!-- Địa chỉ -->
+    <div>
+      <label for="address">Địa chỉ giao hàng (*)</label><br>
+      <input type="text" id="address" size="50" placeholder="Số nhà, đường, phường, quận..."><br>
+      <span id="err-address" style="display:none; color:red;">Địa chỉ không được để trống và phải có ít nhất 10 ký tự.</span>
+    </div>
+
+    <br>
+
+    <!-- Ghi chú -->
+    <div>
+      <label for="note">Ghi chú (tuỳ chọn) — <span id="char-count">0/200</span></label><br>
+      <textarea id="note" rows="4" cols="50" placeholder="Yêu cầu đặc biệt..."></textarea><br>
+      <span id="err-note" style="display:none; color:red;">Ghi chú không được vượt quá 200 ký tự.</span>
+    </div>
+
+    <br>
+
+    <!-- Thanh toán -->
+    <div>
+      <label>Phương thức thanh toán (*)</label><br>
+      <input type="radio" name="payment" id="pay-cod" value="COD">
+      <label for="pay-cod">COD (Tiền mặt)</label>
+      &nbsp;
+      <input type="radio" name="payment" id="pay-bank" value="Chuyển khoản">
+      <label for="pay-bank">Chuyển khoản</label>
+      &nbsp;
+      <input type="radio" name="payment" id="pay-wallet" value="Ví điện tử">
+      <label for="pay-wallet">Ví điện tử</label><br>
+      <span id="err-payment" style="display:none; color:red;">Vui lòng chọn phương thức thanh toán.</span>
+    </div>
+
+    <br>
+
+    <button type="submit">Đặt hàng ngay</button>
+
+  </form>
+
+  <!-- Xác nhận đơn hàng -->
+  <div id="confirm-div" style="display:none;">
+    <hr>
+    <h3>Xác nhận đặt hàng?</h3>
+    <p>Sản phẩm: <strong id="cs-product"></strong></p>
+    <p>Số lượng: <strong id="cs-quantity"></strong></p>
+    <p>Ngày giao: <strong id="cs-date"></strong></p>
+    <p>Thanh toán: <strong id="cs-payment"></strong></p>
+    <p>Tổng tiền: <strong id="cs-total"></strong></p>
+    <button id="btn-yes">Xác nhận</button>
+    &nbsp;
+    <button id="btn-no">Hủy</button>
+  </div>
+
+  <!-- Thành công -->
+  <div id="success-div" style="display:none;">
+    <hr>
+    <h3>🎉 Đặt hàng thành công!</h3>
+    <p>Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ xác nhận sớm nhất.</p>
+  </div>
+
+  <script>
+    // ── Giá sản phẩm ─────────────────────────────────────
+    var prices = {
+      "Áo thun":       150000,
+      "Quần jeans":    280000,
+      "Giày thể thao": 650000,
+      "Túi xách":      420000,
+      "Nón lưỡi trai":  95000
+    };
+
+    // ── Helpers ───────────────────────────────────────────
+    function fmt(n) {
+      return Number(n).toLocaleString("vi-VN") + " ₫";
+    }
+
+    function todayStr() {
+      var d = new Date();
+      var mm = String(d.getMonth() + 1).padStart(2, "0");
+      var dd = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + mm + "-" + dd;
+    }
+
+    function maxDateStr() {
+      var d = new Date();
+      d.setDate(d.getDate() + 30);
+      var mm = String(d.getMonth() + 1).padStart(2, "0");
+      var dd = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + mm + "-" + dd;
+    }
+
+    function fmtDate(str) {
+      if (!str) return "—";
+      var p = str.split("-");
+      return p[2] + "/" + p[1] + "/" + p[0];
+    }
+
+    // ── Lấy elements ─────────────────────────────────────
+    var form       = document.getElementById("order-form");
+    var selProduct = document.getElementById("product");
+    var inpQty     = document.getElementById("quantity");
+    var inpDate    = document.getElementById("delivery-date");
+    var inpAddress = document.getElementById("address");
+    var taNote     = document.getElementById("note");
+    var priceVal   = document.getElementById("price-value");
+    var charCount  = document.getElementById("char-count");
+    var confirmDiv = document.getElementById("confirm-div");
+    var successDiv = document.getElementById("success-div");
+
+    // Giới hạn ngày
+    inpDate.min = todayStr();
+    inpDate.max = maxDateStr();
+
+    // ── Tính tổng tiền ────────────────────────────────────
+    function calcTotal() {
+      var prod = selProduct.value;
+      var qty  = parseInt(inpQty.value, 10);
+      if (prod && prices[prod] && !isNaN(qty) && qty >= 1 && qty <= 99) {
+        priceVal.textContent = fmt(prices[prod] * qty);
+        return prices[prod] * qty;
+      }
+      priceVal.textContent = "—";
+      return 0;
+    }
+
+    selProduct.addEventListener("change", calcTotal);
+    inpQty.addEventListener("input", calcTotal);
+
+    // ── Đếm ký tự ghi chú ────────────────────────────────
+    taNote.addEventListener("input", function() {
+      var len = taNote.value.length;
+      charCount.textContent = len + "/200";
+      charCount.style.color = len > 200 ? "red" : "";
+      if (len > 200) {
+        showErr("err-note", "Ghi chú không được vượt quá 200 ký tự.");
+      } else {
+        hideErr("err-note");
+      }
+    });
+
+    // ── Show / hide lỗi ──────────────────────────────────
+    function showErr(errId, msg) {
+      var e = document.getElementById(errId);
+      if (msg) e.textContent = msg;
+      e.style.display = "inline";
+      return false;
+    }
+
+    function hideErr(errId) {
+      document.getElementById(errId).style.display = "none";
+      return true;
+    }
+
+    // ── Validate từng field ───────────────────────────────
+    function validateProduct() {
+      return selProduct.value
+        ? hideErr("err-product")
+        : showErr("err-product", "Vui lòng chọn sản phẩm.");
+    }
+
+    function validateQty() {
+      var v = parseInt(inpQty.value, 10);
+      return (inpQty.value !== "" && !isNaN(v) && v >= 1 && v <= 99)
+        ? hideErr("err-quantity")
+        : showErr("err-quantity", "Số lượng phải là số nguyên từ 1 đến 99.");
+    }
+
+    function validateDate() {
+      var v = inpDate.value;
+      if (!v)
+        return showErr("err-date", "Vui lòng chọn ngày giao hàng.");
+      if (v < todayStr())
+        return showErr("err-date", "Ngày giao không được là ngày trong quá khứ.");
+      if (v > maxDateStr())
+        return showErr("err-date", "Ngày giao không được quá 30 ngày từ hôm nay.");
+      return hideErr("err-date");
+    }
+
+    function validateAddress() {
+      return inpAddress.value.trim().length >= 10
+        ? hideErr("err-address")
+        : showErr("err-address", "Địa chỉ không được để trống và phải có ít nhất 10 ký tự.");
+    }
+
+    function validateNote() {
+      return taNote.value.length <= 200
+        ? hideErr("err-note")
+        : showErr("err-note", "Ghi chú không được vượt quá 200 ký tự.");
+    }
+
+    function validatePayment() {
+      return document.querySelector('input[name="payment"]:checked')
+        ? hideErr("err-payment")
+        : showErr("err-payment", "Vui lòng chọn phương thức thanh toán.");
+    }
+
+    // ── Blur listeners ────────────────────────────────────
+    selProduct.addEventListener("blur",  validateProduct);
+    inpQty.addEventListener("blur",      validateQty);
+    inpDate.addEventListener("blur",     validateDate);
+    inpAddress.addEventListener("blur",  validateAddress);
+
+    // Xóa lỗi khi nhập lại
+    selProduct.addEventListener("change", validateProduct);
+    inpQty.addEventListener("input",      validateQty);
+    inpDate.addEventListener("input",     validateDate);
+    inpAddress.addEventListener("input",  validateAddress);
+
+    var radios = document.querySelectorAll('input[name="payment"]');
+    for (var i = 0; i < radios.length; i++) {
+      radios[i].addEventListener("change", validatePayment);
+    }
+
+    // ── Submit ────────────────────────────────────────────
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      var v1 = validateProduct();
+      var v2 = validateQty();
+      var v3 = validateDate();
+      var v4 = validateAddress();
+      var v5 = validateNote();
+      var v6 = validatePayment();
+
+      if (!(v1 && v2 && v3 && v4 && v5 && v6)) return;
+
+      // Điền tóm tắt vào confirm
+      var total   = calcTotal();
+      var payEl   = document.querySelector('input[name="payment"]:checked');
+      var payment = payEl ? payEl.value : "—";
+
+      document.getElementById("cs-product").textContent  = selProduct.value;
+      document.getElementById("cs-quantity").textContent = inpQty.value + " cái";
+      document.getElementById("cs-date").textContent     = fmtDate(inpDate.value);
+      document.getElementById("cs-payment").textContent  = payment;
+      document.getElementById("cs-total").textContent    = fmt(total);
+
+      confirmDiv.style.display = "block";
+    });
+
+    // ── Xác nhận / Hủy ───────────────────────────────────
+    document.getElementById("btn-yes").addEventListener("click", function() {
+      confirmDiv.style.display = "none";
+      form.style.display       = "none";
+      successDiv.style.display = "block";
+    });
+
+    document.getElementById("btn-no").addEventListener("click", function() {
+      confirmDiv.style.display = "none";
+    });
+  </script>
+
+</body>
+</html>

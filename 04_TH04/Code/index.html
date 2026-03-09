@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bảng Điểm Sinh Viên</title>
+</head>
+<body>
+
+  <h1>Bảng Điểm Sinh Viên</h1>
+
+  <!-- Input -->
+  <label>Họ và tên: <input type="text" id="inp-name" placeholder="Nguyễn Văn A" /></label>
+  <label>Điểm (0–10): <input type="number" id="inp-score" placeholder="8.5" min="0" max="10" step="0.1" /></label>
+  <button id="btn-add">Thêm</button>
+
+  <!-- Bảng -->
+  <table border="1" cellpadding="6" cellspacing="0">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Họ tên</th>
+        <th>Điểm</th>
+        <th>Xếp loại</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <!-- Thống kê -->
+  <p id="stats">Tổng: 0 sinh viên | Điểm trung bình: —</p>
+
+  <script>
+    let students = [];
+
+    function xepLoai(diem) {
+      if (diem >= 8.5) return 'Giỏi';
+      if (diem >= 7.0) return 'Khá';
+      if (diem >= 5.0) return 'Trung bình';
+      return 'Yếu';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tbody');
+
+      tbody.innerHTML = students.map((sv, idx) => `
+        <tr style="${sv.diem < 5 ? 'background: yellow' : ''}">
+          <td>${idx + 1}</td>
+          <td>${sv.ten}</td>
+          <td>${sv.diem.toFixed(1)}</td>
+          <td>${xepLoai(sv.diem)}</td>
+          <td><button class="btn-del" data-index="${idx}">Xóa</button></td>
+        </tr>
+      `).join('');
+
+      // Thống kê
+      const total = students.length;
+      const avg = total === 0 ? '—' : (students.reduce((s, sv) => s + sv.diem, 0) / total).toFixed(2);
+      document.getElementById('stats').textContent = `Tổng: ${total} sinh viên | Điểm trung bình: ${avg}`;
+    }
+
+    function themSinhVien() {
+      const inpName  = document.getElementById('inp-name');
+      const inpScore = document.getElementById('inp-score');
+      const ten  = inpName.value.trim();
+      const diem = parseFloat(inpScore.value);
+
+      if (!ten) { alert('Vui lòng nhập họ tên!'); inpName.focus(); return; }
+      if (isNaN(diem) || diem < 0 || diem > 10) { alert('Điểm phải là số từ 0 đến 10!'); inpScore.focus(); return; }
+
+      students.push({ ten, diem });
+      renderTable();
+
+      inpName.value  = '';
+      inpScore.value = '';
+      inpName.focus();
+    }
+
+    // Nút Thêm
+    document.getElementById('btn-add').addEventListener('click', themSinhVien);
+
+    // Enter ở ô Điểm
+    document.getElementById('inp-score').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') themSinhVien();
+    });
+
+    // Event Delegation: Xóa
+    document.getElementById('tbody').addEventListener('click', (e) => {
+      if (e.target.matches('.btn-del')) {
+        students.splice(parseInt(e.target.getAttribute('data-index')), 1);
+        renderTable();
+      }
+    });
+
+    renderTable();
+  </script>
+
+</body>
+</html>

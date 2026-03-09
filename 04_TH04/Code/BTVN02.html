@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài tập về nhà 2 – Multi-step Form</title>
+</head>
+<body>
+
+  <h2>Đăng Ký Tài Khoản</h2>
+
+  <!-- Thanh tiến trình -->
+  <p id="progress-text">Bước 1 / 3</p>
+  <progress id="progress-bar" value="1" max="3" style="width:300px;"></progress>
+
+  <hr>
+
+  <!-- ═══ BƯỚC 1: Thông tin cá nhân ═══ -->
+  <div id="step-1">
+    <h3>Bước 1 – Thông tin cá nhân</h3>
+
+    <div>
+      <label for="fullname">Họ tên (*)</label><br>
+      <input type="text" id="fullname" size="30" placeholder="Nguyễn Văn A"><br>
+      <span id="err-fullname" style="display:none; color:red;">Họ tên không được để trống.</span>
+    </div>
+
+    <br>
+
+    <div>
+      <label for="dob">Ngày sinh (*)</label><br>
+      <input type="date" id="dob"><br>
+      <span id="err-dob" style="display:none; color:red;">Vui lòng chọn ngày sinh.</span>
+    </div>
+
+    <br>
+
+    <div>
+      <label>Giới tính (*)</label><br>
+      <input type="radio" name="gender" id="gender-male" value="Nam">
+      <label for="gender-male">Nam</label>
+      &nbsp;
+      <input type="radio" name="gender" id="gender-female" value="Nữ">
+      <label for="gender-female">Nữ</label>
+      &nbsp;
+      <input type="radio" name="gender" id="gender-other" value="Khác">
+      <label for="gender-other">Khác</label><br>
+      <span id="err-gender" style="display:none; color:red;">Vui lòng chọn giới tính.</span>
+    </div>
+
+    <br>
+    <button id="btn-next-1">Tiếp theo &rarr;</button>
+  </div>
+
+  <!-- ═══ BƯỚC 2: Thông tin tài khoản ═══ -->
+  <div id="step-2" style="display:none;">
+    <h3>Bước 2 – Thông tin tài khoản</h3>
+
+    <div>
+      <label for="email">Email (*)</label><br>
+      <input type="text" id="email" size="30" placeholder="example@email.com"><br>
+      <span id="err-email" style="display:none; color:red;">Email không hợp lệ.</span>
+    </div>
+
+    <br>
+
+    <div>
+      <label for="password">Mật khẩu (*)</label><br>
+      <input type="password" id="password" size="30" placeholder="Tối thiểu 6 ký tự"><br>
+      <span id="err-password" style="display:none; color:red;">Mật khẩu phải có ít nhất 6 ký tự.</span>
+    </div>
+
+    <br>
+
+    <div>
+      <label for="confirm-password">Xác nhận mật khẩu (*)</label><br>
+      <input type="password" id="confirm-password" size="30" placeholder="Nhập lại mật khẩu"><br>
+      <span id="err-confirm-password" style="display:none; color:red;">Mật khẩu xác nhận không khớp.</span>
+    </div>
+
+    <br>
+    <button id="btn-back-2">&larr; Quay lại</button>
+    &nbsp;
+    <button id="btn-next-2">Tiếp theo &rarr;</button>
+  </div>
+
+  <!-- ═══ BƯỚC 3: Xác nhận ═══ -->
+  <div id="step-3" style="display:none;">
+    <h3>Bước 3 – Xác nhận thông tin</h3>
+
+    <p>Kiểm tra lại thông tin trước khi hoàn tất đăng ký:</p>
+
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr><td><strong>Họ tên</strong></td><td id="sum-fullname">—</td></tr>
+      <tr><td><strong>Ngày sinh</strong></td><td id="sum-dob">—</td></tr>
+      <tr><td><strong>Giới tính</strong></td><td id="sum-gender">—</td></tr>
+      <tr><td><strong>Email</strong></td><td id="sum-email">—</td></tr>
+      <tr><td><strong>Mật khẩu</strong></td><td>••••••</td></tr>
+    </table>
+
+    <br>
+    <button id="btn-back-3">&larr; Quay lại</button>
+    &nbsp;
+    <button id="btn-submit">&#10003; Hoàn tất đăng ký</button>
+  </div>
+
+  <!-- ═══ THÀNH CÔNG ═══ -->
+  <div id="step-success" style="display:none;">
+    <hr>
+    <h3>&#127881; Đăng ký thành công!</h3>
+    <p>Chào mừng bạn, <strong id="success-name"></strong>! Tài khoản đã được tạo.</p>
+  </div>
+
+  <script>
+    // ── Lấy elements ─────────────────────────────────────
+    var step1      = document.getElementById("step-1");
+    var step2      = document.getElementById("step-2");
+    var step3      = document.getElementById("step-3");
+    var stepSuccess= document.getElementById("step-success");
+    var progressBar= document.getElementById("progress-bar");
+    var progressTxt= document.getElementById("progress-text");
+
+    // Bước 1
+    var inpFullname = document.getElementById("fullname");
+    var inpDob      = document.getElementById("dob");
+
+    // Bước 2
+    var inpEmail    = document.getElementById("email");
+    var inpPassword = document.getElementById("password");
+    var inpConfirm  = document.getElementById("confirm-password");
+
+    // ── Cập nhật progress bar ─────────────────────────────
+    function setStep(n) {
+      progressBar.value   = n;
+      progressTxt.textContent = "Bước " + n + " / 3";
+    }
+
+    // ── Show / hide lỗi ──────────────────────────────────
+    function showErr(errId, msg) {
+      var e = document.getElementById(errId);
+      if (msg) e.textContent = msg;
+      e.style.display = "inline";
+      return false;
+    }
+
+    function hideErr(errId) {
+      document.getElementById(errId).style.display = "none";
+      return true;
+    }
+
+    // ── Validate bước 1 ──────────────────────────────────
+    function validateStep1() {
+      var ok = true;
+
+      if (inpFullname.value.trim() === "") {
+        showErr("err-fullname", "Họ tên không được để trống.");
+        ok = false;
+      } else {
+        hideErr("err-fullname");
+      }
+
+      if (inpDob.value === "") {
+        showErr("err-dob", "Vui lòng chọn ngày sinh.");
+        ok = false;
+      } else {
+        hideErr("err-dob");
+      }
+
+      if (!document.querySelector('input[name="gender"]:checked')) {
+        showErr("err-gender", "Vui lòng chọn giới tính.");
+        ok = false;
+      } else {
+        hideErr("err-gender");
+      }
+
+      return ok;
+    }
+
+    // ── Validate bước 2 ──────────────────────────────────
+    function validateStep2() {
+      var ok = true;
+
+      // Validate email đơn giản
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(inpEmail.value.trim())) {
+        showErr("err-email", "Email không hợp lệ.");
+        ok = false;
+      } else {
+        hideErr("err-email");
+      }
+
+      if (inpPassword.value.length < 6) {
+        showErr("err-password", "Mật khẩu phải có ít nhất 6 ký tự.");
+        ok = false;
+      } else {
+        hideErr("err-password");
+      }
+
+      if (inpConfirm.value !== inpPassword.value || inpConfirm.value === "") {
+        showErr("err-confirm-password", "Mật khẩu xác nhận không khớp.");
+        ok = false;
+      } else {
+        hideErr("err-confirm-password");
+      }
+
+      return ok;
+    }
+
+    // ── Điền tóm tắt bước 3 ──────────────────────────────
+    function fillSummary() {
+      var genderEl = document.querySelector('input[name="gender"]:checked');
+      var dobParts = inpDob.value.split("-");
+      var dobFormatted = dobParts[2] + "/" + dobParts[1] + "/" + dobParts[0];
+
+      document.getElementById("sum-fullname").textContent = inpFullname.value.trim();
+      document.getElementById("sum-dob").textContent      = dobFormatted;
+      document.getElementById("sum-gender").textContent   = genderEl ? genderEl.value : "—";
+      document.getElementById("sum-email").textContent    = inpEmail.value.trim();
+    }
+
+    // ── Chuyển bước ──────────────────────────────────────
+    function goTo(from, to) {
+      from.style.display = "none";
+      to.style.display   = "block";
+    }
+
+    // ── Nút Tiếp theo bước 1 ─────────────────────────────
+    document.getElementById("btn-next-1").addEventListener("click", function() {
+      if (!validateStep1()) return;
+      goTo(step1, step2);
+      setStep(2);
+    });
+
+    // ── Nút Quay lại bước 2 ──────────────────────────────
+    document.getElementById("btn-back-2").addEventListener("click", function() {
+      goTo(step2, step1);
+      setStep(1);
+    });
+
+    // ── Nút Tiếp theo bước 2 ─────────────────────────────
+    document.getElementById("btn-next-2").addEventListener("click", function() {
+      if (!validateStep2()) return;
+      fillSummary();
+      goTo(step2, step3);
+      setStep(3);
+    });
+
+    // ── Nút Quay lại bước 3 ──────────────────────────────
+    document.getElementById("btn-back-3").addEventListener("click", function() {
+      goTo(step3, step2);
+      setStep(2);
+    });
+
+    // ── Nút Hoàn tất ─────────────────────────────────────
+    document.getElementById("btn-submit").addEventListener("click", function() {
+      goTo(step3, stepSuccess);
+      progressBar.value      = 3;
+      progressTxt.textContent = "Hoàn tất!";
+      document.getElementById("success-name").textContent = inpFullname.value.trim();
+    });
+
+    // ── Xóa lỗi khi người dùng nhập lại ─────────────────
+    inpFullname.addEventListener("input", function() {
+      if (inpFullname.value.trim() !== "") hideErr("err-fullname");
+    });
+
+    inpDob.addEventListener("change", function() {
+      if (inpDob.value !== "") hideErr("err-dob");
+    });
+
+    document.querySelectorAll('input[name="gender"]').forEach(function(r) {
+      r.addEventListener("change", function() { hideErr("err-gender"); });
+    });
+
+    inpEmail.addEventListener("input", function() {
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailRegex.test(inpEmail.value.trim())) hideErr("err-email");
+    });
+
+    inpPassword.addEventListener("input", function() {
+      if (inpPassword.value.length >= 6) hideErr("err-password");
+    });
+
+    inpConfirm.addEventListener("input", function() {
+      if (inpConfirm.value === inpPassword.value && inpConfirm.value !== "") hideErr("err-confirm-password");
+    });
+  </script>
+
+</body>
+</html>
